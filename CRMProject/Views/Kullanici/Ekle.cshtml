@@ -1,0 +1,73 @@
+@model CRMProject.Models.UserCreateViewModel
+@{
+    ViewData["Title"] = "Yeni Kullanıcı Ekle";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <h5 class="crm-card-title">
+                    <i class="fas fa-user-plus text-primary"></i>Yeni Kullanıcı Tanımlama
+                </h5>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Listeye Dön
+                </a>
+            </div>
+            <div class="crm-card-body">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger py-2 px-3 small rounded-3 mb-4">
+                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                    </div>
+                }
+
+                <form asp-action="Ekle" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="AdıSoyadı" class="form-label">Adı Soyadı <span class="text-danger">*</span></label>
+                        <input asp-for="AdıSoyadı" class="form-control" placeholder="Örn: Ayşe Demir" required />
+                        <span asp-validation-for="AdıSoyadı" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">E-Posta Adresi (Giriş Kullanıcı Adı) <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope text-muted"></i></span>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="ayse@esbi.com.tr" required />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Şifre" class="form-label">Giriş Şifresi <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock text-muted"></i></span>
+                            <input asp-for="Şifre" type="password" class="form-control" placeholder="En az 6 karakter" required />
+                        </div>
+                        <span asp-validation-for="Şifre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Rol" class="form-label">Yetki Rolü <span class="text-danger">*</span></label>
+                        <select asp-for="Rol" class="form-select" required>
+                            <option value="Kullanıcı">Kullanıcı (Cari & Malzeme Görüntüleme, Ekleme, Düzenleme)</option>
+                            <option value="Admin">Admin (Tam Yetki - Silme, Kullanıcı Yönetimi, Ayarlar)</option>
+                        </select>
+                        <span asp-validation-for="Rol" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-save me-1"></i>Kullanıcıyı Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

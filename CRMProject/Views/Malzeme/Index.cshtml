@@ -1,0 +1,199 @@
+@model List<CRMProject.Data.Entities.Malzeme>
+@{
+    ViewData["Title"] = "Malzeme Yönetimi";
+    var aramaMetni = ViewBag.AramaMetni as string ?? "";
+    var seciliKategori = ViewBag.SeciliKategori as string ?? "";
+    var kategoriler = ViewBag.Kategoriler as List<string> ?? new List<string>();
+}
+
+<div class="crm-card mb-4">
+    <div class="crm-card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-2 align-items-center justify-content-between">
+                <div class="col-md-5 col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted border-end-0">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" name="aramaMetni" value="@aramaMetni"
+                               class="form-control border-start-0"
+                               placeholder="Malzeme kodu veya adı ara..." />
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <select name="kategori" class="form-select">
+                        <option value="">Tüm Kategoriler</option>
+                        @foreach (var kat in kategoriler)
+                        {
+                            <option value="@kat" selected="@(kat == seciliKategori)">@kat</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3 col-lg-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter me-1"></i>Filtrele
+                    </button>
+                    @if (!string.IsNullOrEmpty(aramaMetni) || !string.IsNullOrEmpty(seciliKategori))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary" title="Filtreyi Temizle">
+                            <i class="fas fa-xmark"></i>
+                        </a>
+                    }
+                </div>
+                <div class="col-12 col-lg-3 text-lg-end mt-2 mt-lg-0">
+                    <a asp-action="Ekle" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Yeni Malzeme Ekle
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="crm-card">
+    <div class="crm-card-header">
+        <h5 class="crm-card-title">
+            <i class="fas fa-boxes-stacked text-primary"></i>Malzeme ve Stok Listesi
+            <span class="badge bg-secondary-subtle text-secondary fs-6 ms-2">@Model.Count Malzeme</span>
+        </h5>
+    </div>
+    <div class="crm-card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="crm-table">
+                    <thead>
+                        <tr>
+                            <th>Malzeme Kodu</th>
+                            <th>Malzeme Adı</th>
+                            <th>Kategori</th>
+                            <th>Birim</th>
+                            <th class="text-end">Alış Fiyatı</th>
+                            <th class="text-end">Satış Fiyatı</th>
+                            <th class="text-center">Mevcut Stok</th>
+                            <th class="text-center">Kritik Stok</th>
+                            <th class="text-center">Durum</th>
+                            <th class="text-end">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var isCritical = item.StokMiktarı <= item.KritikStok;
+                            <tr class="@(isCritical ? "row-critical" : "")">
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace px-2 py-1">@item.MalzemeKodu</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold @(isCritical ? "text-danger" : "")">@item.MalzemeAdı</div>
+                                    @if (!string.IsNullOrEmpty(item.Açıklama))
+                                    {
+                                        <small class="text-muted d-block text-truncate" style="max-width: 280px;" title="@item.Açıklama">
+                                            @item.Açıklama
+                                        </small>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary-subtle text-secondary">
+                                        @(item.Kategori ?? "Belirtilmemiş")
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-muted">@item.Birim</span>
+                                </td>
+                                <td class="text-end font-monospace">
+                                    ₺@item.AlışFiyatı.ToString("N2")
+                                </td>
+                                <td class="text-end font-monospace fw-semibold">
+                                    ₺@item.SatışFiyatı.ToString("N2")
+                                </td>
+                                <td class="text-center">
+                                    @if (isCritical)
+                                    {
+                                        <span class="badge bg-danger fs-6 px-2 py-1">
+                                            @item.StokMiktarı.ToString("N0") @item.Birim
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fw-bold text-dark">
+                                            @item.StokMiktarı.ToString("N0") @item.Birim
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center text-muted font-monospace">
+                                    @item.KritikStok.ToString("N0") @item.Birim
+                                </td>
+                                <td class="text-center">
+                                    @if (isCritical)
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                            <i class="fas fa-triangle-exclamation me-1"></i>Kritik Stok
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                            <i class="fas fa-check me-1"></i>Yeterli
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    <a asp-action="Duzenle" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Düzenle">
+                                        <i class="fas fa-pen-to-square"></i>
+                                    </a>
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal-@item.Id" title="Sil">
+                                            <i class="fas fa-trash-can"></i>
+                                        </button>
+
+                                        <!-- Delete Modal -->
+                                        <div class="modal fade text-start" id="deleteModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-danger">
+                                                            <i class="fas fa-triangle-exclamation me-2"></i>Malzeme Silme Onayı
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="mb-1"><strong>@item.MalzemeAdı</strong> (@item.MalzemeKodu) adlı malzemeyi silmek istediğinize emin misiniz?</p>
+                                                        <small class="text-muted">Bu işlem kaydı pasif duruma getirecektir (Soft Delete).</small>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Vazgeç</button>
+                                                        <form asp-action="Sil" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                                <i class="fas fa-trash-can me-1"></i>Evet, Sil
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-5 text-center text-muted">
+                <i class="fas fa-box-open fa-3x mb-3 text-secondary"></i>
+                <h5>Herhangi bir malzeme bulunamadı.</h5>
+                <p class="small text-muted mb-3">Filtre kriterlerinizi değiştirebilir veya yeni bir malzeme tanımlayabilirsiniz.</p>
+                <a asp-action="Ekle" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Yeni Malzeme Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>

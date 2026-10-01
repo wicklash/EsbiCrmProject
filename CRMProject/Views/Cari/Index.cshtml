@@ -1,0 +1,181 @@
+@model List<CRMProject.Data.Entities.Cari>
+@{
+    ViewData["Title"] = "Cari Yönetimi";
+    var aramaMetni = ViewBag.AramaMetni as string ?? "";
+}
+
+<div class="crm-card mb-4">
+    <div class="crm-card-body">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-md-7 col-lg-6">
+                <form asp-action="Index" method="get" class="d-flex gap-2">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted border-end-0">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" name="aramaMetni" value="@aramaMetni"
+                               class="form-control border-start-0"
+                               placeholder="Cari kodu, ünvan, vergi no, il, telefon ara..." />
+                    </div>
+                    <button type="submit" class="btn btn-primary px-3">
+                        <i class="fas fa-filter me-1"></i>Ara
+                    </button>
+                    @if (!string.IsNullOrEmpty(aramaMetni))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary px-3" title="Filtreyi Temizle">
+                            <i class="fas fa-xmark"></i>
+                        </a>
+                    }
+                </form>
+            </div>
+            <div class="col-md-5 col-lg-6 text-md-end">
+                <a asp-action="Ekle" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Yeni Cari Ekle
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="crm-card">
+    <div class="crm-card-header">
+        <h5 class="crm-card-title">
+            <i class="fas fa-users text-primary"></i>Cari Kart Listesi
+            <span class="badge bg-secondary-subtle text-secondary fs-6 ms-2">@Model.Count Kayıt</span>
+        </h5>
+    </div>
+    <div class="crm-card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="crm-table">
+                    <thead>
+                        <tr>
+                            <th>Cari Kodu</th>
+                            <th>Ünvan</th>
+                            <th>Cari Tipi</th>
+                            <th>Vergi Bilgisi</th>
+                            <th>İletişim</th>
+                            <th>Konum</th>
+                            <th class="text-end">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace px-2 py-1">@item.CariKodu</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">@item.Ünvan</div>
+                                    @if (!string.IsNullOrEmpty(item.Adres))
+                                    {
+                                        <small class="text-muted d-block text-truncate" style="max-width: 260px;" title="@item.Adres">
+                                            <i class="fas fa-location-dot me-1"></i>@item.Adres
+                                        </small>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.CariTipi == "Müşteri")
+                                    {
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                                            <i class="fas fa-user-tag me-1"></i>Müşteri
+                                        </span>
+                                    }
+                                    else if (item.CariTipi == "Tedarikçi")
+                                    {
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle">
+                                            <i class="fas fa-truck me-1"></i>Tedarikçi
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                            <i class="fas fa-handshake me-1"></i>@item.CariTipi
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.VergiNo))
+                                    {
+                                        <div class="small fw-semibold">VN: @item.VergiNo</div>
+                                        <div class="small text-muted">VD: @(item.VergiDairesi ?? "-")</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Telefon))
+                                    {
+                                        <div class="small"><i class="fas fa-phone me-1 text-muted"></i>@item.Telefon</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.E_posta))
+                                    {
+                                        <div class="small"><i class="fas fa-envelope me-1 text-muted"></i>@item.E_posta</div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="small">@(item.İl ?? "-") / @(item.İlçe ?? "-")</div>
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    <a asp-action="Duzenle" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Düzenle">
+                                        <i class="fas fa-pen-to-square"></i>
+                                    </a>
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal-@item.Id" title="Sil">
+                                            <i class="fas fa-trash-can"></i>
+                                        </button>
+
+                                        <!-- Delete Modal -->
+                                        <div class="modal fade text-start" id="deleteModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-danger">
+                                                            <i class="fas fa-triangle-exclamation me-2"></i>Cari Kaydı Silme Onayı
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="mb-1"><strong>@item.Ünvan</strong> (@item.CariKodu) adlı cari kaydını silmek istediğinize emin misiniz?</p>
+                                                        <small class="text-muted">Bu işlem kaydı pasif duruma getirecektir (Soft Delete).</small>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Vazgeç</button>
+                                                        <form asp-action="Sil" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                                <i class="fas fa-trash-can me-1"></i>Evet, Sil
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-5 text-center text-muted">
+                <i class="fas fa-users-slash fa-3x mb-3 text-secondary"></i>
+                <h5>Herhangi bir cari kaydı bulunamadı.</h5>
+                <p class="small text-muted mb-3">Arama kriterlerinizi değiştirebilir veya yeni bir cari ekleyebilirsiniz.</p>
+                <a asp-action="Ekle" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Yeni Cari Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,115 @@
+@model List<CRMProject.Models.UserItemViewModel>
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+}
+
+<div class="crm-card mb-4">
+    <div class="crm-card-body">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <h5 class="fw-bold mb-1">Kullanıcı Hesapları ve Yetkilendirme</h5>
+                <p class="text-muted mb-0 small">Sisteme erişebilen kullanıcılar ve sahip oldukları roller listelenmektedir.</p>
+            </div>
+            <div>
+                <a asp-action="Ekle" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-1"></i>Yeni Kullanıcı Ekle
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="crm-card">
+    <div class="crm-card-header">
+        <h5 class="crm-card-title">
+            <i class="fas fa-users-gear text-primary"></i>Kayıtlı Kullanıcılar (@Model.Count)
+        </h5>
+    </div>
+    <div class="crm-card-body p-0">
+        <div class="table-responsive">
+            <table class="crm-table">
+                <thead>
+                    <tr>
+                        <th>Adı Soyadı</th>
+                        <th>E-Posta</th>
+                        <th>Görev / Tanım</th>
+                        <th>Roller</th>
+                        <th>Hesap Durumu</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        var isCurrent = user.Email == User.Identity?.Name;
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                        @(user.AdıSoyadı.Length > 0 ? user.AdıSoyadı.Substring(0, 1).ToUpper() : "U")
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">
+                                            @user.AdıSoyadı
+                                            @if (isCurrent)
+                                            {
+                                                <span class="badge bg-info-subtle text-info ms-1">Siz</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="font-monospace small">@user.Email</span>
+                            </td>
+                            <td>
+                                <span class="text-muted">@user.Görev</span>
+                            </td>
+                            <td>
+                                @if (user.Roles.Contains("Admin"))
+                                {
+                                    <span class="badge bg-primary">Admin</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Kullanıcı</span>
+                                }
+                            </td>
+                            <td>
+                                @if (user.Aktif)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                        <i class="fas fa-check-circle me-1"></i>Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                        <i class="fas fa-ban me-1"></i>Pasif
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (!isCurrent)
+                                {
+                                    <form asp-action="DurumDegistir" asp-route-id="@user.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm @(user.Aktif ? "btn-outline-danger" : "btn-outline-success")"
+                                                title="@(user.Aktif ? "Hesabı Pasife Al" : "Hesabı Aktifleştir")">
+                                            <i class="fas @(user.Aktif ? "fa-user-slash" : "fa-user-check") me-1"></i>
+                                            @(user.Aktif ? "Pasif Yap" : "Aktif Yap")
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small italic">-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

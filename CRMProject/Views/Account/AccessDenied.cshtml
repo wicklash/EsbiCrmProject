@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Erişim Reddedildi";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 text-center">
+        <div class="crm-card p-5">
+            <div class="text-danger mb-4">
+                <i class="fas fa-shield-halved fa-4x"></i>
+            </div>
+            <h2 class="h3 fw-bold mb-2">Erişim Yetkiniz Bulunmuyor</h2>
+            <p class="text-muted mb-4">
+                Bu sayfayı görüntülemek veya bu işlemi gerçekleştirmek için gerekli yetkiye (örneğin <strong>Admin</strong> rolü) sahip değilsiniz.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>Ana Panele Dön
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

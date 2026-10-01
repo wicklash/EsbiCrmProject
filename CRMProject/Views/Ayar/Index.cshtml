@@ -1,0 +1,99 @@
+@{
+    ViewData["Title"] = "Sistem Ayarları";
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="crm-card mb-4">
+            <div class="crm-card-header">
+                <h5 class="crm-card-title">
+                    <i class="fas fa-sliders text-primary"></i>Genel Sistem Bilgileri
+                </h5>
+            </div>
+            <div class="crm-card-body">
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0">
+                        <tbody>
+                            <tr class="border-bottom">
+                                <td class="fw-bold text-secondary" style="width: 200px;">Uygulama Adı:</td>
+                                <td>ESBİ CRM Web Portalı</td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td class="fw-bold text-secondary">Uygulama Sürümü:</td>
+                                <td><span class="badge bg-primary">v1.0.0 (Release)</span></td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td class="fw-bold text-secondary">Hedef Çerçeve:</td>
+                                <td>@ViewBag.FrameworkVersion</td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td class="fw-bold text-secondary">İşletim Sistemi:</td>
+                                <td>@ViewBag.OSDescription</td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td class="fw-bold text-secondary">Sunucu Saati:</td>
+                                <td>@ViewBag.ServerTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-secondary">Veritabanı Motoru:</td>
+                                <td>Microsoft SQL Server (Code First EF Core 8.x)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <h5 class="crm-card-title">
+                    <i class="fas fa-shield-halved text-success"></i>Güvenlik ve Yetkilendirme Standartları
+                </h5>
+            </div>
+            <div class="crm-card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fas fa-check-circle text-success me-2"></i>ASP.NET Core Identity Güvenliği</span>
+                        <span class="badge bg-success-subtle text-success">Aktif</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fas fa-check-circle text-success me-2"></i>Anti-Forgery Token Koruması (CSRF)</span>
+                        <span class="badge bg-success-subtle text-success">Aktif</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fas fa-check-circle text-success me-2"></i>Rol Tabanlı Yetkilendirme (Admin / Kullanıcı)</span>
+                        <span class="badge bg-success-subtle text-success">Aktif</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fas fa-check-circle text-success me-2"></i>Soft Delete (Güvenli Veri Silme) İlkesi</span>
+                        <span class="badge bg-success-subtle text-success">Aktif</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="crm-card mb-4">
+            <div class="crm-card-header">
+                <h5 class="crm-card-title">
+                    <i class="fas fa-circle-info text-info"></i>Proje ve Mentörlük
+                </h5>
+            </div>
+            <div class="crm-card-body">
+                <p class="small text-muted mb-2">
+                    Bu proje <strong>ESBİ Bilişim ve Telekomünikasyon</strong> bünyesinde staj projesi olarak geliştirilmiştir.
+                </p>
+                <div class="p-3 bg-light rounded-3 small">
+                    <div class="fw-bold mb-1">Kullanılan Mimariler:</div>
+                    <ul class="mb-0 ps-3 text-secondary">
+                        <li>N-Tier Katmanlı Mimari</li>
+                        <li>Entity Framework Core Code First</li>
+                        <li>Repository / Service Pattern</li>
+                        <li>Bootstrap 5 Responsive UI</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

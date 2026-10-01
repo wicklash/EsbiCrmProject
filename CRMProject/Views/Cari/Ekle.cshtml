@@ -1,0 +1,124 @@
+@model CRMProject.Services.Models.CariViewModel
+@{
+    ViewData["Title"] = "Yeni Cari Ekle";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <h5 class="crm-card-title">
+                    <i class="fas fa-user-plus text-primary"></i>Yeni Cari Kartı Tanımlama
+                </h5>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Listeye Dön
+                </a>
+            </div>
+            <div class="crm-card-body">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger py-2 px-3 small rounded-3 mb-4">
+                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                    </div>
+                }
+
+                <form asp-action="Ekle" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <!-- 1. Temel Bilgiler -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
+                        <i class="fas fa-id-card me-1"></i>1. Temel Bilgiler
+                    </h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="CariKodu" class="form-label">Cari Kodu <span class="text-danger">*</span></label>
+                            <input asp-for="CariKodu" class="form-control" placeholder="Örn: C006" required />
+                            <span asp-validation-for="CariKodu" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <label asp-for="Ünvan" class="form-label">Ünvan / Firma Adı <span class="text-danger">*</span></label>
+                            <input asp-for="Ünvan" class="form-control" placeholder="Örn: ABC Bilişim A.Ş." required />
+                            <span asp-validation-for="Ünvan" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="CariTipi" class="form-label">Cari Tipi <span class="text-danger">*</span></label>
+                            <select asp-for="CariTipi" class="form-select" required>
+                                <option value="">Seçiniz...</option>
+                                <option value="Müşteri">Müşteri</option>
+                                <option value="Tedarikçi">Tedarikçi</option>
+                                <option value="Her İkisi">Her İkisi</option>
+                            </select>
+                            <span asp-validation-for="CariTipi" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Vergi Bilgileri -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
+                        <i class="fas fa-file-invoice-dollar me-1"></i>2. Vergi Bilgileri
+                    </h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="VergiDairesi" class="form-label">Vergi Dairesi</label>
+                            <input asp-for="VergiDairesi" class="form-control" placeholder="Örn: Kadıköy" />
+                            <span asp-validation-for="VergiDairesi" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="VergiNo" class="form-label">Vergi / T.C. Kimlik No</label>
+                            <input asp-for="VergiNo" class="form-control" placeholder="Örn: 1234567890" maxlength="11" />
+                            <span asp-validation-for="VergiNo" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. İletişim & Adres Bilgileri -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
+                        <i class="fas fa-map-location-dot me-1"></i>3. İletişim ve Adres Bilgileri
+                    </h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Telefon" class="form-label">Telefon Numarası</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-phone text-muted"></i></span>
+                                <input asp-for="Telefon" class="form-control" placeholder="Örn: 0212 555 0000" />
+                            </div>
+                            <span asp-validation-for="Telefon" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EPosta" class="form-label">E-Posta Adresi</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope text-muted"></i></span>
+                                <input asp-for="EPosta" type="email" class="form-control" placeholder="Örn: info@firma.com" />
+                            </div>
+                            <span asp-validation-for="EPosta" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="İl" class="form-label">İl</label>
+                            <input asp-for="İl" class="form-control" placeholder="Örn: İstanbul" />
+                            <span asp-validation-for="İl" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="İlçe" class="form-label">İlçe</label>
+                            <input asp-for="İlçe" class="form-control" placeholder="Örn: Kadıköy" />
+                            <span asp-validation-for="İlçe" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Adres" class="form-label">Açık Adres</label>
+                            <textarea asp-for="Adres" class="form-control" rows="3" placeholder="Mahalle, Cadde, Sokak, Kapı No..."></textarea>
+                            <span asp-validation-for="Adres" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-save me-1"></i>Cariyi Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+@model CRMProject.Services.Models.MalzemeViewModel
+@{
+    ViewData["Title"] = "Yeni Malzeme Ekle";
+    var kategoriler = ViewBag.Kategoriler as List<string> ?? new List<string>();
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <h5 class="crm-card-title">
+                    <i class="fas fa-boxes-stacked text-primary"></i>Yeni Malzeme Kartı Tanımlama
+                </h5>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Listeye Dön
+                </a>
+            </div>
+            <div class="crm-card-body">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger py-2 px-3 small rounded-3 mb-4">
+                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                    </div>
+                }
+
+                <form asp-action="Ekle" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <!-- 1. Ürün Bilgileri -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
+                        <i class="fas fa-barcode me-1"></i>1. Ürün Bilgileri
+                    </h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="MalzemeKodu" class="form-label">Malzeme Kodu <span class="text-danger">*</span></label>
+                            <input asp-for="MalzemeKodu" class="form-control" placeholder="Örn: MLZ006" required />
+                            <span asp-validation-for="MalzemeKodu" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <label asp-for="MalzemeAdı" class="form-label">Malzeme / Ürün Adı <span class="text-danger">*</span></label>
+                            <input asp-for="MalzemeAdı" class="form-control" placeholder="Örn: Fiber Optik Kablo" required />
+                            <span asp-validation-for="MalzemeAdı" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Kategori" class="form-label">Kategori</label>
+                            <input asp-for="Kategori" class="form-control" list="kategoriListesi" placeholder="Kategori seçin veya yazın" />
+                            <datalist id="kategoriListesi">
+                                @foreach (var kat in kategoriler)
+                                {
+                                    <option value="@kat" />
+                                }
+                            </datalist>
+                            <span asp-validation-for="Kategori" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Birim ve Fiyatlandırma -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
+                        <i class="fas fa-tags me-1"></i>2. Birim ve Fiyat Bilgileri
+                    </h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="Birim" class="form-label">Ölçü Birimi <span class="text-danger">*</span></label>
+                            <select asp-for="Birim" class="form-select" required>
+                                <option value="">Seçiniz...</option>
+                                <option value="Adet">Adet</option>
+                                <option value="Paket">Paket</option>
+                                <option value="Koli">Koli</option>
+                                <option value="Kg">Kg</option>
+                                <option value="Lt">Lt</option>
+                                <option value="Mt">Mt</option>
+                            </select>
+                            <span asp-validation-for="Birim" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="AlışFiyatı" class="form-label">Alış Fiyatı (₺)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₺</span>
+                                <input asp-for="AlışFiyatı" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" />
+                            </div>
+                            <span asp-validation-for="AlışFiyatı" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="SatışFiyatı" class="form-label">Satış Fiyatı (₺)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₺</span>
+                                <input asp-for="SatışFiyatı" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" />
+                            </div>
+                            <span asp-validation-for="SatışFiyatı" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Stok ve Kritik Seviye -->
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
+                        <i class="fas fa-warehouse me-1"></i>3. Stok Seviyeleri ve Açıklama
+                    </h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="StokMiktarı" class="form-label">Mevcut Stok Miktarı</label>
+                            <input asp-for="StokMiktarı" type="number" step="1" min="0" class="form-control" placeholder="0" />
+                            <span asp-validation-for="StokMiktarı" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="KritikStok" class="form-label">Kritik Stok Uyarı Eşiği</label>
+                            <input asp-for="KritikStok" type="number" step="1" min="0" class="form-control" placeholder="0" />
+                            <span class="text-muted small">Bu değerin altına indiğinde sistem uyarı verir.</span>
+                            <span asp-validation-for="KritikStok" class="text-danger small d-block"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Açıklama" class="form-label">Açıklama / Teknik Özellikler</label>
+                            <textarea asp-for="Açıklama" class="form-control" rows="3" placeholder="Ürünle ilgili notlar ve açıklamalar..."></textarea>
+                            <span asp-validation-for="Açıklama" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-save me-1"></i>Malzemeyi Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,218 @@
+@model CRMProject.Models.GirisViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giriş Yap - ESBİ CRM</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            color: #1e293b;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #2563eb, #3b82f6, #60a5fa);
+        }
+
+        .auth-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo {
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 0.85rem;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.35);
+        }
+
+        .auth-title {
+            font-weight: 800;
+            font-size: 1.45rem;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .auth-subtitle {
+            color: #64748b;
+            font-size: 0.88rem;
+            margin: 0;
+        }
+
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: #2563eb;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.85rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .demo-accounts {
+            margin-top: 1.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+            font-size: 0.8rem;
+        }
+
+        .demo-account-item {
+            cursor: pointer;
+            padding: 0.35rem 0.5rem;
+            border-radius: 6px;
+            transition: background 0.15s ease;
+        }
+
+        .demo-account-item:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <div class="auth-brand">
+            <div class="auth-logo">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <h1 class="auth-title">ESBİ CRM</h1>
+            <p class="auth-subtitle">Müşteri ve Stok Yönetim Sistemi</p>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger py-2 px-3 small rounded-3 mb-3">
+                <div asp-validation-summary="All" class="text-danger mb-0"></div>
+            </div>
+        }
+
+        <form asp-controller="Account" asp-action="Login" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            <div class="mb-3">
+                <label asp-for="EPosta" class="form-label small fw-bold text-secondary mb-1">E-Posta Adresi</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light text-muted border-end-0 rounded-start-3">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <input asp-for="EPosta" class="form-control border-start-0 rounded-end-3" id="inputEmail" placeholder="ornek@esbi.com.tr" required />
+                </div>
+                <span asp-validation-for="EPosta" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Şifre" class="form-label small fw-bold text-secondary mb-1">Şifre</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light text-muted border-end-0 rounded-start-3">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input asp-for="Şifre" type="password" class="form-control border-start-0 rounded-end-3" id="inputPassword" placeholder="••••••••" required />
+                </div>
+                <span asp-validation-for="Şifre" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input asp-for="BeniHatırla" class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label small text-secondary" for="rememberMe">
+                    Beni hatırla
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-login w-100 mb-3">
+                <i class="fas fa-arrow-right-to-bracket me-2"></i>Giriş Yap
+            </button>
+        </form>
+
+        <div class="demo-accounts">
+            <div class="fw-bold text-secondary mb-1">
+                <i class="fas fa-key me-1 text-primary"></i>Test Hesapları (Doldurmak için tıklayın):
+            </div>
+            <div class="demo-account-item d-flex justify-content-between align-items-center" onclick="fillCredentials('admin@esbi.com.tr', 'Admin@123!')">
+                <span><strong>Admin:</strong> admin@esbi.com.tr</span>
+                <span class="badge bg-primary">Admin</span>
+            </div>
+            <div class="demo-account-item d-flex justify-content-between align-items-center mt-1" onclick="fillCredentials('kullanici@esbi.com.tr', 'User@123!')">
+                <span><strong>Kullanıcı:</strong> kullanici@esbi.com.tr</span>
+                <span class="badge bg-secondary">Kullanıcı</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fillCredentials(email, password) {
+            document.getElementById('inputEmail').value = email;
+            document.getElementById('inputPassword').value = password;
+        }
+    </script>
+</body>
+</html>
